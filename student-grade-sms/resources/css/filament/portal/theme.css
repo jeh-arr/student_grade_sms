@@ -1,0 +1,46 @@
+@import "/vendor/filament/filament/resources/css/theme.css";
+
+@config 'tailwind.config.js';
+
+@layer components {
+    .fi-sidebar-nav {
+        background: #08a55a;
+        border-radius: 35px;
+        margin: 15px;
+    }
+    .dark .fi-sidebar-nav {
+        background: #05350f;
+    }
+    .fi-sidebar {
+        background: #4c554e;
+    }
+    .fi-ta-header-toolbar {
+        background: #08a55a;
+    }
+
+    .fi-section-header {
+        background: #08a55a;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .dark .fi-ta-header-toolbar {
+        background: #05350f;
+    }
+    .fi-sidebar-item-icon {
+        stroke: #05350f;
+        stroke-width: 2;
+    }
+    .dark .fi-sidebar-item-icon {
+        stroke: whitesmoke;
+        stroke-width: 2;
+    }
+    .fi-sidebar-item-label {
+        font: large;
+        color: #05350f;
+    }
+
+    .fi-simple-main {
+        width: 32px;
+    }
+}

@@ -19,6 +19,7 @@ class GradeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
 
+    protected static ?int $navigationSort = 4;
     public static function form(Form $form): Form
     {
         return $form
@@ -46,7 +47,7 @@ class GradeResource extends Resource
             
             ->columns([
                 Tables\Columns\TextColumn::make('student.student_id')
-                    ->label('Student ID')
+                    ->label('Student Id')
                     ->searchable()
                     ->sortable(),
                     
@@ -74,11 +75,7 @@ class GradeResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteAction::make(),
             ]);
     }
 
@@ -97,5 +94,10 @@ class GradeResource extends Resource
             'view' => Pages\ViewGrade::route('/{record}'),
             'edit' => Pages\EditGrade::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && auth()->user()->is_admin;
     }
 }

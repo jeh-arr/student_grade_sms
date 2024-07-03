@@ -24,7 +24,7 @@ class UserResource extends Resource
     protected static ?string $navigationLabel = 'Accounts';
 
     protected static ?string $modelLabel = 'Accounts'; 
-
+    protected static ?int $navigationSort = 5;
     public static function form(Form $form): Form
     {
         return $form
@@ -54,15 +54,15 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
                 
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('is_admin')
+                    ->label('Role')
+                    ->searchable()
+                    ->formatStateUsing(function ($state) {
+                        return $state ? 'Admin' : 'Student';
+                    }),
+                    
+                
             ])
             ->filters([
                 //
@@ -70,11 +70,7 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteAction::make(),
             ]);
     }
     public static function infolist(Infolist $infolist): Infolist
@@ -105,5 +101,9 @@ class UserResource extends Resource
             //'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && auth()->user()->is_admin;
     }
 }

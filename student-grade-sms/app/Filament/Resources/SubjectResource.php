@@ -7,6 +7,7 @@ use App\Filament\Resources\SubjectResource\RelationManagers;
 use App\Models\Subject;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -20,11 +21,12 @@ class SubjectResource extends Resource
     protected static ?string $model = Subject::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
-
+    protected static ?int $navigationSort = 3;
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                
                 Forms\Components\TextInput::make('subject_code')
                     ->required()
                     ->unique(ignoreRecord: true)
@@ -33,25 +35,26 @@ class SubjectResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
-            ]);
+                Forms\Components\Textarea::make('subject_description')
+                    ->columnSpan(2)
+                    ->required()
+                    ->maxLength(255), 
+            ])->columns(2);
+    
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('Subject Id')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('subject_code')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('subject_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                
             ])
             ->filters([
                 //
@@ -59,11 +62,7 @@ class SubjectResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteAction::make(),
             ]);
     }
     public static function infolist(Infolist $infolist): Infolist
@@ -95,5 +94,9 @@ class SubjectResource extends Resource
             //'view' => Pages\ViewSubject::route('/{record}'),
             'edit' => Pages\EditSubject::route('/{record}/edit'),
         ];
+    }
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && auth()->user()->is_admin;
     }
 }

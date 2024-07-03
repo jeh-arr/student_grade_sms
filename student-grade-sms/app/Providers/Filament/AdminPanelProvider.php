@@ -24,14 +24,15 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('admin')
-            ->path('admin')
+            ->id('portal')
+            ->path('portal')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Green,
             ])
+            ->viteTheme('resources/css/filament/portal/theme.css')
             //->brandLogo(asset('images/school_logo.png'))
-            ->brandName('Student Grade SMS')
+            //->brandName('Student Grade SMS')
             ->favicon(asset('images/school_logo.png'))
             ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

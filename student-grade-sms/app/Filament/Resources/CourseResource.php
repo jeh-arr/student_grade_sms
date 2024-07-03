@@ -7,7 +7,9 @@ use App\Filament\Resources\CourseResource\RelationManagers;
 use App\Models\Course;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -20,7 +22,7 @@ class CourseResource extends Resource
     protected static ?string $model = Course::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
-
+    protected static ?int $navigationSort = 1;
     public static function form(Form $form): Form
     {
         return $form
@@ -33,7 +35,11 @@ class CourseResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
-            ]);
+                Forms\Components\Textarea::make('course_description')
+                    ->columnSpan(2)
+                    ->required()
+                    ->maxLength(255), 
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
@@ -41,19 +47,15 @@ class CourseResource extends Resource
         return $table
         
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('Course Id')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('course_code')
                     
                     ->searchable(),
                 Tables\Columns\TextColumn::make('course_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                
             ])
             ->filters([
                 //
@@ -62,20 +64,25 @@ class CourseResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
     public static function infolist(Infolist $infolist): Infolist
     {
         return  $infolist
             ->schema([
+                Section::make('Course Information')
+                ->schema([
+                    TextEntry::make('id')->label('Course ID'),
+                    TextEntry::make('course_code')->label('Course Code'),
+                    TextEntry::make('course_name')->label('Course Name'),
+                    
+                ])->columns(3),
+                Section::make('Course Description')
+                ->schema([
+                    TextEntry::make('course_description')->label('Course Description'),
+                    
+                ])->columns(1),
                 
-                TextEntry::make('course_code')->label('Course Code'),
-                TextEntry::make('course_name')->label('Course Name'),
                 
             ])->columns(1);
             
@@ -99,4 +106,10 @@ class CourseResource extends Resource
             'edit' => Pages\EditCourse::route('/{record}/edit'),
         ];
     }
+    public static function canViewAny(): bool
+    {
+        
+        return auth()->check() && auth()->user()->is_admin;
+    }
+    
 }

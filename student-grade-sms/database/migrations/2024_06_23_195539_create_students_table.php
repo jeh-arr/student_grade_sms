@@ -18,8 +18,14 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('middle_name');
             $table->string('last_name');
+
+            $table->string('year_level');
+            $table->date('date_of_birth');
+            $table->string('gender');
+            $table->string('address');
+            $table->string('contact_number');
             $table->foreignId('course_id'); 
-            
+            $table->foreignId('user_id');
             $table->timestamps();
         });
     }
