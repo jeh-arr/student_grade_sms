@@ -27,19 +27,19 @@ class StudentResource extends Resource
     protected static ?int $navigationSort = 2;
     public static function form(Form $form): Form
     {
-        $is_admin = auth()->user()->is_admin;
+        
         return $form
             
                 
             ->schema([
                 Forms\Components\Section::make('Student Information')
-                ->hidden(!$is_admin)
+                
                 ->schema([
                 Forms\Components\TextInput::make('student_id')
                     ->required()
                     ->unique(ignoreRecord: true)
-                    ->maxLength(255)
-                    ->disabled(!$is_admin),
+                    ->maxLength(255),
+                    
                 Forms\Components\Select::make('course_id')
                     ->relationship('course', 'course_name')
                     ->required(),
@@ -79,10 +79,7 @@ class StudentResource extends Resource
                 ])->columns(2),    
                 Forms\Components\Section::make('Account Information')
                 ->schema([
-                Forms\Components\TextInput::make('user.name')
-                    ->label('User Name')
-                    ->required()
-                    ->maxLength(255),
+                
                 Forms\Components\TextInput::make('user.email')
                     ->label('User Email')
                     ->email()
@@ -158,13 +155,10 @@ class StudentResource extends Resource
                 ->schema([
                     TextEntry::make('contact_number')->label('Contact Number'),
                     TextEntry::make('address')->label('Address'),
-                ])->columns(2),
-                Section::make('Account Information')
-                ->schema([
-                    TextEntry::make('user.name')->label('Account Name'),
-                    TextEntry::make('user.email')->label('Account Email'),
-                    
-                ])->columns(2),
+                    TextEntry::make('user.email')->label('Email'),
+                ])->columns(3),
+                
+                
             ])->columns(1);
             
         

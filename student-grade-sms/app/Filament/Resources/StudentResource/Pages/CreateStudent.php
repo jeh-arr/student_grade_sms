@@ -20,6 +20,7 @@ class CreateStudent extends CreateRecord
         $userData = $data['user'];
         $userData['is_admin'] = false;
         $userData['password'] = Hash::make($userData['password']);
+        $userData['name'] = $data['first_name'] . ' ' . $data['last_name'];
         $user = User::create($userData);
 
         // Create Student
